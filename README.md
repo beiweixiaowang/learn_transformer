@@ -92,8 +92,8 @@ torch.Size([1, 5, 16])
 **位置编码选择多样，可以是固定的，也可以设置为`可学习的参数`**
 我们选择固定的位置编码。使用不同频率的sin和cos函数来进行位置编码，如下所示：
 
-$$PE_{pos,2i}=sin(pos/10000^{2i/d_{model}})$$         
-$$PE_{pos,2i+1}=cos(pos/10000^{2i/d_{model}})$$  
+$$ PE_{pos,2i}=sin(pos/10000^{2i/d_{model}}) $$         
+$$ PE_{pos,2i+1}=cos(pos/10000^{2i/d_{model}}) $$  
 可以绘制出这两个函数的图像：
 
 ![sin_cos](img/sin_cos_img.jpg)
