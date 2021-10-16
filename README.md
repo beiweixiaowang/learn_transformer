@@ -203,7 +203,9 @@ tensor([[[ 0.0000e+00,  1.0000e+00,  0.0000e+00,  1.0000e+00,  0.0000e+00,
 第二个子层包括一个**前馈全连接层**和**规范化层**以及一个残差连接
 
 如下图所示：
-![encoder](./img/8.png)
+
+![encoder](./img/8.png)  
+
 两个子层的结构其实是一致的，只是中间核心层的实现不同
 
 我们逐步构建出整个编码器结构
@@ -236,9 +238,9 @@ class LayerNorm(nn.Module):
 
 ### 1.3 Attention
 人类在观察事物时，无法同时仔细观察眼前的一切，只能聚焦到某一个局部。通常我们大脑在简单了解眼前的场景后，能够很快把注意力聚焦到最有价值的局部来仔细观察，从而作出有效判断。或许是基于这样的启发，大家想到了在算法中利用注意力机制。
-计算方式：
-三个指定的输入:$Q(query)$, $K(key)$, $V(value)$
+计算方式：  
 
+三个指定的输入: $Q(query)$, $K(key)$, $V(value)$
 
 计算公式：**$Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt(d_{k})})V$**
 
@@ -248,8 +250,10 @@ Attention 功能可以描述为将 query 和一组 key-value 映射到输出，�
 
 particular attention 称之为“缩放的点积 Attention”(Scaled Dot-Product Attention")。其输入为 query、key(维度是$d_k$)以及 values(维度是$d_v$)。我们计算 query 和所有 key 的点积，然后对每个除以 $\sqrt{d_k}$, 最后用 softmax 函数获得 value 的权重。
 
-计算流程图：
+计算流程图： 
+
 ![](./img/4.png)
+
 当前时间步的注意力计算结果，**是一个组系数 * 每个时间步的特征向量value的累加**，而这个系数，通过**当前时间步的query和其他时间步对应的key做内积**得到，这个过程相当于**用自己的query对别的时间步的key做查询，判断相似度，决定以多大的比例将对应时间步的信息继承过来**。
 
 Attention 能够**捕获长距离依赖**，并且能够**学习到句子内部结构及语法**
@@ -315,6 +319,7 @@ output_x[0].shape,output_x[1].shape
 
 ### 1.4 多头注意力机制
 在搭建EncoderLayer时候所使用的Attention模块，实际使用的是**多头注意力**，可以简单理解为多个注意力模块组合在一起。
+
 ![mult](./img/5.png)
 
 - **它扩展了模型关注不同位置的能力:** 在上面的例子中，第一个位置的输出 $z_1$ 包含了句子中其他每个位置的很小一部分信息，但$z_1$​ 仅仅是单个向量，所以可能仅由第 1 个位置的信息主导了。而当我们翻译句子：The animal didn’t cross the street because it was too tired时，我们不仅希望模型关注到"it"本身，还希望模型关注到"The"和"animal"，甚至关注到"tired"。这时，多头注意力机制会有帮助。
@@ -323,12 +328,15 @@ output_x[0].shape,output_x[1].shape
 多头注意力机制主要有以下几步组成
 
 1. 在多头注意力机制中，我们为每组注意力设定单独的 $W_Q$, $W_K$, $W_V$ 参数矩阵。将输入 $X$ 和每组注意力的 $W_Q$, $W_K$, $W_V$ 相乘，得到 8 组 $Q$, $K$, $V$ 矩阵。
+2. 
 ![mulit1](./img/2-multi-head.png)
 
 2. 把每组 $K$, $Q$, $V$ 计算得到每组的 $Z$ 矩阵，就得到 8 个 $Z$ 矩阵
+3. 
 ![asd](./img/2-8z.png)
 
 3. 由于前馈神经网络层接收的是 1 个矩阵（其中每行的向量表示一个词），而不是 8 个矩阵，所以我们直接把 8 个子矩阵拼接起来得到一个大的矩阵，然后和另一个权重矩阵$W^O$相乘做一次变换，映射到前馈神经网络层所需要的维度。
+4. 
 ![adfs](./img/2-to1.png)
 
 ##### MutiHeadAttention 小结：
@@ -339,9 +347,11 @@ output_x[0].shape,output_x[1].shape
 - 得到最终的矩阵 Z，这个矩阵包含了所有 ***attention heads***（注意力头） 的信息。这个矩阵会输入到 FFNN (`Feed Forward Neural Network`)层。
 
 将所有内容放到一张图中：
+
 ![fasd](./img/2-put-together.png)
 
 学习了多头注意力机制，让我们再来看下当我们前面提到的 it 例子，不同的 attention heads （注意力头）对应的“it”attention 了哪些内容。下图中的绿色和橙色线条分别表示 2 组不同的 attentin heads：
+
 ![a](./img/it-attention.png)
 >>
 > 当我们编码单词"it"时，其中一个 attention head （橙色注意力头）最关注的是"the animal"，另外一个绿色 attention head 关注的是"tired"。因此在某种意义上，"it"在模型中的表示，融合了"animal"和"tire"的部分表达。
@@ -484,6 +494,7 @@ def subsequent_mask(size):
 plt.figure(figsize=(5,5))
 plt.imshow(subsequent_mask(20)[0])
 ```
+
 ![](./img/mask.png)
 
 ***
@@ -502,7 +513,9 @@ plt.imshow(subsequent_mask(20)[0])
   - 为了便于进行残差连接，模型中的所有子层以及 embedding 层产生的输出的维度都为 $d_{\text{model}}=512$。
 
 将 Self-Attention 层的层标准化（layer-normalization）和涉及的向量计算细节都进行可视化，如下所示：
+
 ![](./img/resnet_norm.png)
+
 ***
 实现代码
 ```python
@@ -557,6 +570,7 @@ class SublayerConnection(nn.Module):
 
 ```
 >注：上面的实现中，我对残差的链接方案进行了小小的调整，和原论文有所不同。把x从norm中拿出来，保证永远有一条“高速公路”，这样理论上会收敛的快一些，但我无法确保这样做一定是对的，请一定注意。
+
 定义好了SubLayerConnection，我们就可以实现EncoderLayer的结构:
 ```python
 class EncoderLayer(nn.Module):
@@ -620,6 +634,7 @@ class Decoder(nn.Module):
 ![](./img/transformer_decoding_1.gif)
 
 解码（decoding）阶段的**每一个时间步都输出一个翻译后的单词（这里的例子是英语翻译），解码器当前时间步的输出又重新作为输入 Q 和编码器的输出 K、V 共同作为下一个时间步解码器的输入** 然后重复这个过程，直到输出一个结束符。如下图所示：
+
 ![](./img/2-encoder-decoder.gif)
 
 ***
@@ -965,6 +980,7 @@ plt.plot(np.arange(1, 20000), [[opt.rate(i)
                                 for opt in opts] for i in range(1, 20000)])
 plt.legend(["512:4000", "512:8000", "256:4000"])
 ```
+
 ![](./img/output_56_1.png)
 
 ### 正则化 & 标签平滑
@@ -1008,7 +1024,9 @@ v = crit(predict.log(),
 # Show the target distributions expected by the system.
 plt.imshow(crit.true_dist)
 ```
+
 ![](./img/im.png)
+
 
 由于标签平滑的存在，如果模型对于某个单词特别有信心，输出特别大的概率，会被惩罚。如下代码所示，随着输入 x 的增大，x/d 会越来越大，1/d 会越来越小，但是 loss 并不是一直降低的。
 ```py
@@ -1028,6 +1046,7 @@ x = np.arange(1, 100)
 plt.plot(x, y)
 ```
 ![](./img/line.png)
+
 模型训练部分到此结束
 ***
 
@@ -1161,4 +1180,5 @@ tensor([[ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10]])
 
 transformer模型在pytorch上已经有实现代码，huggingface的transformer库现在基本是建模的首选。但是想要完全弄懂transformer,深入了解内部结构，还是需要自行去完成整个模型的。可以参考本文档一步一步去构建自己的transformer。不过在实际工程中，更建议采用开源库来完成。
 huggingface is all you need.
+
 ![](./img/hf.svg)
