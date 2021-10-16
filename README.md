@@ -1176,7 +1176,7 @@ tensor([[ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10]])
 可以看到我们构建的transformer模型可以work,后面我们将构建的模型应用到实际应用场景中去感受transformer的威力。
 ***
 ## Last dance
-本计划于国庆节完成transformer模块的编写，奈何自己一直拖延，直到16号才完成。💔 
+本计划于15号完成transformer模块的编写，奈何自己一直拖延，直到18号才完成。💔 
 
 transformer模型在pytorch上已经有实现代码，huggingface的transformer库现在基本是建模的首选。但是想要完全弄懂transformer,深入了解内部结构，还是需要自行去完成整个模型的。可以参考本文档一步一步去构建自己的transformer。不过在实际工程中，更建议采用开源库来完成。
 huggingface is all you need.
