@@ -1,4 +1,7 @@
 # 使用transformer实现OCR字符识别 
+- **Writer** : 永驻
+- **Date** : 2021.10.24
+
 本次任务以ICDAR2015 Incidental Scene Text中的[Task4.3:word recognition](https://rrc.cvc.uab.es/?ch=4&com=downloads)单词识别为子任务作为数据集。讲解如何**使用transformer来实现一个简单的OCR文字识别任务**，并从中体会transformer是如何应用到除分类以外更复杂的CV任务中的。
 
 文章从以下几个方面进行讲解：
@@ -687,3 +690,4 @@ total correct rate of trainset: 99.88441978733242%
 我们使用ICDAR2015中的一个单词识别任务数据集，然后对数据的特点进行了简单分析，并构建了识别用的字符映射关系表。之后，我们重点介绍了将transformer引入来解决OCR任务的动机与思路，并结合代码详细介绍了细节，最后我们大致过了一些训练相关的逻辑和代码。
 
 大致介绍transformer在CV领域的应用方法，希望帮助大家打开思路。❤
+![](./img/hf.svg)
