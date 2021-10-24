@@ -13,5 +13,5 @@ transformer原理，各部分代码实现以及transorformer在CV领域的简单
 ## 食用方式：
 建议使用**MathJax Plugin for Github** chrome插件来渲染公式，或者git clone本代码库，本地查看文档和代码。
 ```git
-
+git clone https://github.com/beiweixiaowang/learn_transformer
 ```
